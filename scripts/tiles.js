@@ -40,7 +40,7 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 					quarterTiles[i].enlarge();
 				}
 			}
-		console.log(tileIsFullScreen);	
+		// console.log(tileIsFullScreen);	
 
 
 	};
