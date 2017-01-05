@@ -8,6 +8,8 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
   	var quarterTiles = [];
   	var images = [];
   	var videos = [];
+  	var years = ['1830-50s', '1830-50s', '1900-50s', '1960s'];
+  	var descriptions = ['There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment. ', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.'];
   	var tileIsFullScreen = false;
   	$rootScope.tileIsFullScreen = false;
 	p.setup = function(){
@@ -85,11 +87,13 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 					this.isClicked = !this.isClicked;
 					tileIsFullScreen = true;
 					$rootScope.tileIsFullScreen = true;
-					$rootScope.$apply();
 					this.isFullScreen = true;
 					this.previousFrame = p.frameCount;
 					videos[index].loop();
 					videos[index].hide();
+					$rootScope.time = years[index];
+					$rootScope.description = descriptions[index];
+					$rootScope.$apply();
 				}
 			}
 		}

@@ -36,6 +36,9 @@ myApp.directive('goBack', function($state, $rootScope){
 	        tile: '='
 	    },
 	    link: function(scope, element, attrs){
+
+	    	$(element).hide();
+
 	    	$(element).on('mouseover', function(){
 	    		$rootScope.overrideClick = true;
 	    	});
@@ -57,7 +60,7 @@ myApp.directive('goBack', function($state, $rootScope){
 
 	        $rootScope.$watch('tileIsFullScreen', function(oldVal, newVal){
 	        	if(newVal == oldVal){
-
+	        		$(element).fadeIn();
 	        	}else{
 		        	if(newVal != oldVal && newVal == true){
 		        		$(element).html('<h5>BACK</h5>');
@@ -66,6 +69,30 @@ myApp.directive('goBack', function($state, $rootScope){
 		        	}
 	        	}
 
+	        	
+	        }, true)
+
+	    }
+	};
+});
+
+
+
+
+myApp.directive('description', function($state, $rootScope){
+	return {
+	    link: function(scope, element, attrs){
+
+	        $rootScope.$watch('tileIsFullScreen', function(oldVal, newVal){
+	        	if(newVal == oldVal){
+	        		$(element).hide();
+	        	}else{
+		        	if(newVal != oldVal && newVal == true){
+		        		$(element).fadeOut();
+		        	}else{
+		        		$(element).fadeIn();
+		        	}
+	        	}
 	        	
 	        }, true)
 
