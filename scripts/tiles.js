@@ -9,6 +9,7 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
   	var images = [];
   	var videos = [];
   	var tileIsFullScreen = false;
+  	$rootScope.tileIsFullScreen = false;
 	p.setup = function(){
 		p.frameRate(180);
 		canvas = p.createCanvas(p.windowWidth, (p.windowWidth / 16) * 9);
@@ -77,12 +78,14 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 	}
 
 	this.checkClick = function(){
-		if(!tileIsFullScreen){
+		if(!tileIsFullScreen && !$rootScope.overrideClick){
 			if(p.mouseX > this.x && p.mouseX < this.x + this.width && p.mouseY > this.y && p.mouseY < this.y + this.height && p.mouseIsPressed){
 				
 				if(p.frameCount > this.previousFrame + 30){
 					this.isClicked = !this.isClicked;
 					tileIsFullScreen = true;
+					$rootScope.tileIsFullScreen = true;
+					$rootScope.$apply();
 					this.isFullScreen = true;
 					this.previousFrame = p.frameCount;
 					videos[index].loop();
@@ -100,6 +103,8 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 			this.y = origin[1];
 			this.width = width;
 			this.height = height;
+			$rootScope.tileIsFullScreen = false;
+			$rootScope.$apply();
 			setTimeout(function(){
 				tileIsFullScreen = false;
 			}, 250);

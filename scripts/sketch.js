@@ -14,7 +14,7 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
   	var selectedCrop = false;
   	var selectedEquip = false;
 	p.setup = function(){
-		p.frameRate(120);
+		p.frameRate(60);
 		canvas = p.createCanvas(p.windowWidth, (p.windowWidth / 16) * 9);
 		canvas.parent('sketch-holder');
 		p.textAlign(p.CENTER);
@@ -48,18 +48,26 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
 		}
 
     if(selectedCrop && selectedEquip){
-      $state.go('tiles', {data: [selectedCrop, selectedEquip]});
+      $state.go('tiles', {data: [selectedCrop, selectedEquip]}).then(function(){
+        selectedCrop = false;
+        selectedEquip = false;
+        $rootScope.tileIsFullScreen = false;
+      });
     }
 	};
 
 
 p.mousePressed = function(){
-	for(var i=0; i < cropTiles.length; i++){
-			cropTiles[i].checkClick();
-		}
-	for(var i=0; i < equiptmentTiles.length; i++){
-			equiptmentTiles[i].checkClick();
-		}	
+
+  if($state.current.name === 'home'){
+      for(var i=0; i < cropTiles.length; i++){
+        cropTiles[i].checkClick();
+      }
+      for(var i=0; i < equiptmentTiles.length; i++){
+        equiptmentTiles[i].checkClick();
+      } 
+  }
+
 }
 
 // Jitter class
