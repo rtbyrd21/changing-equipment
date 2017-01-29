@@ -7,8 +7,8 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
   	var canvas;
   	var cropTiles = [];
   	var equiptmentTiles = [];
-  	var crops = ['corn', 'cabbage', 'carrot', 'lettuce', 'wheat'];
-  	var equiptment = ['rake', 'water', 'tractor', 'wheel barrow', 'net'];
+  	var crops = ['corn', 'soybeans', 'hay', 'small grains'];
+  	var equiptment = ['plowing', 'planting', 'cultivating', 'harvesting'];
   	var tileCount = crops.length + equiptment.length;
   	var cropsMoving = true;
   	var selectedCrop = false;
@@ -49,6 +49,8 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
 
     if(selectedCrop && selectedEquip){
       $state.go('tiles', {data: [selectedCrop, selectedEquip]}).then(function(){
+
+        console.log(selectedCrop, selectedEquip);
         selectedCrop = false;
         selectedEquip = false;
         $rootScope.tileIsFullScreen = false;

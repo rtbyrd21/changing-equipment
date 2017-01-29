@@ -1,6 +1,15 @@
 
 
-myApp.controller('TileController', function($scope, $rootScope, $timeout, $state) {
+myApp.controller('TileController', function($scope, $rootScope, $timeout, $state, $stateParams) {
+
+  console.log($stateParams.data);
+
+  var crop = $stateParams.data[0];
+  var equipment = $stateParams.data[1];
+  var obj = data.crop[crop][equipment];
+
+
+  
 
   var a = function(p) {
 
@@ -8,12 +17,15 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
   	var quarterTiles = [];
   	var images = [];
   	var videos = [];
-  	var years = ['1830-50s', '1830-50s', '1900-50s', '1960s'];
+  	var years = [];
   	var descriptions = ['There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment. ', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.'];
   	var tileIsFullScreen = false;
   	$rootScope.tileIsFullScreen = false;
 	p.setup = function(){
+		infoIcon = p.loadImage("images/info_icon.png"); 
+		closeIcon = p.loadImage("images/close_icon.png"); 
 		p.frameRate(180);
+		p.textAlign(p.CENTER);
 		canvas = p.createCanvas(p.windowWidth, (p.windowWidth / 16) * 9);
 		canvas.parent('quarter-tiles');
 		quarterTiles.push(new QuarterTile(0 - p.windowWidth/2,0 - p.height/2,p.windowWidth/2,p.height/2, [0,0], 0));
@@ -22,8 +34,18 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 		quarterTiles.push(new QuarterTile(p.windowWidth, p.height, p.windowWidth/2,p.height/2, [p.windowWidth/2,p.height/2], 3));
 		for(var i=0; i< quarterTiles.length; i++){
 			images.push(p.loadImage("images/" + i + ".png"));
-			videos.push(p.createVideo("images/" + i + ".mp4"));
+			// videos.push(p.createVideo("images/" + i + ".mp4"));
 		}
+		$.each( obj, function( key, value ) {
+			years.push(key);
+		  	videos.push(p.createVideo("images/" +crop + "/" + equipment + "/"  + key + "/video.mp4"))
+		  });
+
+		videos.forEach(function(item, index){
+			videos[index].loop();
+		});
+
+
 
 	}
 
@@ -33,6 +55,8 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 				if(!quarterTiles[i].isFullScreen){
 					quarterTiles[i].moveIntoPlace();
 					quarterTiles[i].checkClick();
+					quarterTiles[i].checkSlide();
+					quarterTiles[i].drawDate();
 				}
 			}
 
@@ -43,6 +67,9 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 					quarterTiles[i].enlarge();
 				}
 			}
+
+
+
 		// console.log(tileIsFullScreen);	
 
 
@@ -53,6 +80,8 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 function QuarterTile(xPos, yPos, width, height, origin, index) {
 	this.x = xPos;
 	this.y = yPos;
+	this.slideX = xPos;
+	this.slideY = yPos;
 	this.startX = xPos;
 	this.startY = yPos;
 	this.width = width;
@@ -63,6 +92,29 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 	this.isClicked = true;
 	this.previousFrame = 0;
 	this.isFullScreen = false;
+	this.isSliding = false;
+	this.startSlide = false;
+	this.startSlideClosed = false;
+	this.isSlidingClosed = false;
+	this.slideCompletelyOpen = false;
+	this.slideCompletelyClosed = false;
+
+	this.drawDate = function(){
+		p.fill(0);
+		p.rect((this.x + width) - 100, (this.y + height) - 36, 100, 25);
+		p.fill(255);
+		p.text(years[index], (this.x + width) - 80, (this.y + height) - 20);
+		p.fill(255,255,255,200);
+		p.ellipse(((this.x + width) - 40) + 15, (this.y + 10) + 15, 30, 30);
+		if(!this.isSliding){
+			p.image(infoIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+		}else{
+			p.image(closeIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+		}	
+		
+
+	}
+
 	
 
 	this.moveIntoPlace = function(){
@@ -74,28 +126,91 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 		if(!this.isClicked){	
 				p.image(videos[index], this.x, this.y, this.width, this.height);
 			}else{
-				p.image(images[index], this.x, this.y, this.width, this.height);
+				p.image(videos[index], this.x, this.y, this.width, this.height);
 			}
+
 		
 	}
 
+	this.checkSlide = function(){
+		if(this.startSlide){
+			this.slideTile();
+		}
+		if(this.startSlideClosed){
+			this.slideTileClosed();
+		}
+	}
+
 	this.checkClick = function(){
-		if(!tileIsFullScreen && !$rootScope.overrideClick){
+		// if(!tileIsFullScreen && !$rootScope.overrideClick){
 			if(p.mouseX > this.x && p.mouseX < this.x + this.width && p.mouseY > this.y && p.mouseY < this.y + this.height && p.mouseIsPressed){
-				
-				if(p.frameCount > this.previousFrame + 30){
-					this.isClicked = !this.isClicked;
-					tileIsFullScreen = true;
-					$rootScope.tileIsFullScreen = true;
-					this.isFullScreen = true;
-					this.previousFrame = p.frameCount;
-					videos[index].loop();
-					videos[index].hide();
-					$rootScope.time = years[index];
-					$rootScope.description = descriptions[index];
-					$rootScope.$apply();
-				}
+				// if(p.frameCount > this.previousFrame + 30){
+
+
+					//open slide if not completely open
+					if(!this.slideCompletelyOpen){
+						if(!this.isSliding){
+							this.previousFrame = p.frameCount;
+							this.isSliding = true;
+						}
+						this.startSlide = true;
+
+					}
+
+					if(this.slideCompletelyOpen){
+						if(!this.isSlidingClosed){
+							this.previousFrame = p.frameCount;
+							this.isSlidingClosed = true;
+						}
+						this.startSlideClosed = true;
+					}
+					
+					
+					
+
+				// 	this.isClicked = !this.isClicked;
+				// 	tileIsFullScreen = true;
+				// 	$rootScope.tileIsFullScreen = true;
+				// 	this.isFullScreen = true;
+				// 	this.previousFrame = p.frameCount;
+				// 	videos[index].loop();
+				// 	videos[index].hide();
+				// 	$rootScope.time = years[index];
+				// 	$rootScope.description = descriptions[index];
+				// 	$rootScope.$apply();
+				// }
 			}
+		// }
+	}
+
+	this.slideTile = function(){
+		if(p.frameCount < this.speedToMove + (this.previousFrame - 1) && !this.isSlidingClosed){
+			this.slideX += this.distanceToMoveX;
+			this.slideY += this.distanceToMoveY;
+			p.fill(0, 0, 0, 200);
+			p.rect(this.slideX, this.slideY, width, height);
+			p.fill(255);
+			p.text(obj[years[index]].description, this.slideX + (width * .25), this.slideY + (height * .25), width/2, height);
+		}else{
+			p.fill(0, 0, 0, 200);
+			p.rect(this.slideX, this.slideY, width, height);
+			p.fill(255);
+			p.text(obj[years[index]].description, this.slideX + (width *.25), this.slideY + (height * .25), width/2, height);
+			this.slideCompletelyOpen = true;
+		}
+	}
+
+	this.slideTileClosed = function(){
+		if(p.frameCount < this.speedToMove + (this.previousFrame - 1)){
+			this.slideX -= this.distanceToMoveX;
+			this.slideY -= this.distanceToMoveY;
+		}else{
+				this.isSliding = false;
+				this.startSlide = false;
+				this.startSlideClosed = false;
+				this.isSlidingClosed = false;
+				this.slideCompletelyOpen = false;
+				this.slideCompletelyClosed = false;
 		}
 	}
 
