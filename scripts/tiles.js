@@ -40,13 +40,10 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 		quarterTiles.push(new QuarterTile(p.windowWidth,0 - p.height/2, p.windowWidth/2, p.height/2, [p.windowWidth /2,0], 1));
 		quarterTiles.push(new QuarterTile(0 - p.windowWidth/2, p.height, p.windowWidth/2, p.height/2, [0,p.height/2], 2));
 		quarterTiles.push(new QuarterTile(p.windowWidth, p.height, p.windowWidth/2,p.height/2, [p.windowWidth/2,p.height/2], 3));
-		for(var i=0; i< quarterTiles.length; i++){
-			images.push(p.loadImage("images/" + i + ".png"));
-			// videos.push(p.createVideo("images/" + i + ".mp4"));
-		}
+
 		$.each( obj, function( key, value ) {
 			years.push(key);
-		  	videos.push(p.createVideo("images/" +crop + "/" + equipment + "/"  + key + "/video.mp4"))
+		  	videos.push(p.createVideo("http://s3.amazonaws.com/vineyardsandbox/Rob/images/" +crop + "/" + equipment + "/"  + key + "/video.mp4"))
 		  });
 
 		videos.forEach(function(item, index){
