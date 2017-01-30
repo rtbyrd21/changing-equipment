@@ -1,4 +1,5 @@
 *.psd
+*.mp4
 node_modules/
 images/corn/
 images/hay/
