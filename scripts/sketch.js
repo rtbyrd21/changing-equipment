@@ -2,6 +2,13 @@
 
 myApp.controller('SketchController', function($scope, $rootScope, $timeout, $state) {
 
+  $scope.modalShown = false;
+  $scope.toggleModal = function() {
+    $scope.modalShown = !$scope.modalShown;
+  };
+  $scope.modalText = '';
+
+
   var a = function(p) {
 
   	var canvas;
@@ -14,7 +21,7 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
   	var selectedCrop = false;
   	var selectedEquip = false;
 	p.setup = function(){
-		p.frameRate(60);
+		p.frameRate(120);
 		canvas = p.createCanvas(p.windowWidth, (p.windowWidth / 16) * 9);
 		canvas.parent('sketch-holder');
 		p.textAlign(p.CENTER);
@@ -35,6 +42,7 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
 	}
 
 	p.draw = function() {
+    p.translate(0,40);
 		p.background(255);
 		for(var i=0; i < cropTiles.length; i++){
 			cropTiles[i].move();
@@ -48,13 +56,25 @@ myApp.controller('SketchController', function($scope, $rootScope, $timeout, $sta
 		}
 
     if(selectedCrop && selectedEquip){
-      $state.go('tiles', {data: [selectedCrop, selectedEquip]}).then(function(){
 
-        console.log(selectedCrop, selectedEquip);
-        selectedCrop = false;
-        selectedEquip = false;
-        $rootScope.tileIsFullScreen = false;
-      });
+      if(selectedCrop === 'hay' && selectedEquip === 'cultivating'){
+        $scope.modalShown = true;
+        $scope.modalText = 'Because hay was planted so close together, cultivating weeds was not necessary—the weeds were shaded out by the hay';
+        $scope.$apply();
+      }else if(selectedCrop === 'small grains' && selectedEquip === 'cultivating'){
+        $scope.modalShown = true;
+        $scope.modalText = 'Because small grains were planted so closely together, cultivating weeds was not necessary—the weeds were shaded out by the wheat.';
+        $scope.$apply();
+      }else{
+        $state.go('tiles', {data: [selectedCrop, selectedEquip]}).then(function(){
+          selectedCrop = false;
+          selectedEquip = false;
+          $rootScope.tileIsFullScreen = false;
+        });
+
+
+      }
+      
     }
 	};
 
@@ -141,14 +161,14 @@ function EquiptmentTile(startingPos, item) {
   }
 
   this.checkPos = function(){
-  	if(p.floor(this.x + this.width) === this.width){
-  		equiptmentTiles.push(new EquiptmentTile((p.width),this.item));
-    //   console.log('ok');
-  	}
   	if(this.x + this.width < 0){
-      
   		equiptmentTiles.splice(0, 1);
+      console.log('splice');
   	}
+    if(p.floor(this.x) === 0){
+      equiptmentTiles.push(new EquiptmentTile((p.width),this.item));
+      console.log('ok');
+    }
   }
 
   this.checkClick = function(){

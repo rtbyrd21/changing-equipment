@@ -2,7 +2,9 @@
 
 myApp.controller('TileController', function($scope, $rootScope, $timeout, $state, $stateParams) {
 
-  console.log($stateParams.data);
+
+
+
 
   var crop = $stateParams.data[0];
   var equipment = $stateParams.data[1];
@@ -21,11 +23,17 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
   	var descriptions = ['There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment. ', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.', 'There will be text or an information icon that will prompt the visitor to tap on the photo or video of the equipment.'];
   	var tileIsFullScreen = false;
   	$rootScope.tileIsFullScreen = false;
+  	var placeholder;
 	p.setup = function(){
 		infoIcon = p.loadImage("images/info_icon.png"); 
 		closeIcon = p.loadImage("images/close_icon.png"); 
-		p.frameRate(180);
+		background = p.loadImage("images/farm_background.jpg"); 
+		p.frameRate(60);
 		p.textAlign(p.CENTER);
+		placeholder = p.createVideo("images/corn/harvesting/1860s/video.mp4");
+		placeholder.loop();
+		placeholder.hide();
+
 		canvas = p.createCanvas(p.windowWidth, (p.windowWidth / 16) * 9);
 		canvas.parent('quarter-tiles');
 		quarterTiles.push(new QuarterTile(0 - p.windowWidth/2,0 - p.height/2,p.windowWidth/2,p.height/2, [0,0], 0));
@@ -43,29 +51,22 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 
 		videos.forEach(function(item, index){
 			videos[index].loop();
+			videos[index].hide();
 		});
-
-
 
 	}
 
 	p.draw = function() {
-		p.background(255);
+		p.background(background);
 		for(var i=0; i< quarterTiles.length; i++){
-				if(!quarterTiles[i].isFullScreen){
+				// if(!quarterTiles[i].isFullScreen){
 					quarterTiles[i].moveIntoPlace();
-					quarterTiles[i].checkClick();
-					quarterTiles[i].checkSlide();
+					if(videos[i].loadedmetadata){
+						quarterTiles[i].checkClick();
+						quarterTiles[i].checkSlide();
+					}
 					quarterTiles[i].drawDate();
-				}
-			}
-
-		for(var i=0; i< quarterTiles.length; i++){
-				if(quarterTiles[i].isFullScreen){
-					quarterTiles[i].moveIntoPlace();
-					quarterTiles[i].checkClick();
-					quarterTiles[i].enlarge();
-				}
+				// }
 			}
 
 
@@ -105,11 +106,17 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 		p.fill(255);
 		p.text(years[index], (this.x + width) - 80, (this.y + height) - 20);
 		p.fill(255,255,255,200);
-		p.ellipse(((this.x + width) - 40) + 15, (this.y + 10) + 15, 30, 30);
+		if(videos[index].loadedmetadata){
+			p.ellipse(((this.x + width) - 40) + 15, (this.y + 10) + 15, 30, 30);
+		}
 		if(!this.isSliding){
-			p.image(infoIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+			if(videos[index].loadedmetadata){
+				p.image(infoIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+			}
 		}else{
-			p.image(closeIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+			if(videos[index].loadedmetadata){
+				p.image(closeIcon, (this.x + width) - 40, this.y + 10, 30, 30);
+			}
 		}	
 		
 
@@ -122,11 +129,23 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 			this.x += this.distanceToMoveX;
 			this.y += this.distanceToMoveY;
 		}
-		p.rect(this.x, this.y, width, height);
+
 		if(!this.isClicked){	
-				p.image(videos[index], this.x, this.y, this.width, this.height);
+				if(videos[index].loadedmetadata){
+					p.image(videos[index], this.x, this.y, this.width, this.height);
+				}
 			}else{
-				p.image(videos[index], this.x, this.y, this.width, this.height);
+				if(videos[index].loadedmetadata){
+
+					p.image(videos[index], this.x, this.y, this.width, this.height);
+				}else{
+					p.image(placeholder, this.x, this.y, this.width, this.height);
+					p.fill(0);
+					p.rect(this.x, this.y, this.width, this.height);
+					p.fill(255);
+					p.text(obj[years[index]].description, this.x + (this.width *.25), this.y + (this.height * .25), this.width/2, this.height);
+				}
+				
 			}
 
 		
@@ -142,7 +161,7 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 	}
 
 	this.checkClick = function(){
-		// if(!tileIsFullScreen && !$rootScope.overrideClick){
+
 			if(p.mouseX > this.x && p.mouseX < this.x + this.width && p.mouseY > this.y && p.mouseY < this.y + this.height && p.mouseIsPressed){
 				// if(p.frameCount > this.previousFrame + 30){
 
@@ -166,21 +185,7 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 					}
 					
 					
-					
-
-				// 	this.isClicked = !this.isClicked;
-				// 	tileIsFullScreen = true;
-				// 	$rootScope.tileIsFullScreen = true;
-				// 	this.isFullScreen = true;
-				// 	this.previousFrame = p.frameCount;
-				// 	videos[index].loop();
-				// 	videos[index].hide();
-				// 	$rootScope.time = years[index];
-				// 	$rootScope.description = descriptions[index];
-				// 	$rootScope.$apply();
-				// }
 			}
-		// }
 	}
 
 	this.slideTile = function(){
@@ -190,12 +195,25 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 			p.fill(0, 0, 0, 200);
 			p.rect(this.slideX, this.slideY, width, height);
 			p.fill(255);
-			p.text(obj[years[index]].description, this.slideX + (width * .25), this.slideY + (height * .25), width/2, height);
+			var that = this;
+			var spacing = 0;
+			p.textLeading(18);
+			obj[years[index]].description.forEach(function(item, index){
+				p.text(item, that.slideX + (width * .25), (that.slideY + (height * .25)) + spacing, width/2);
+				spacing += textHeight(item, width/2, 18 + 3);
+			});
 		}else{
 			p.fill(0, 0, 0, 200);
 			p.rect(this.slideX, this.slideY, width, height);
 			p.fill(255);
-			p.text(obj[years[index]].description, this.slideX + (width *.25), this.slideY + (height * .25), width/2, height);
+			var that = this;
+			var spacing = 0;
+			p.textLeading(18);
+			obj[years[index]].description.forEach(function(item, index){
+				p.text(item, that.slideX + (width * .25), (that.slideY + (height * .25)) + spacing, width/2);
+				spacing += textHeight(item, width/2, 18 + 3);
+			});
+			// p.text(obj[years[index]].description, this.slideX + (width *.25), this.slideY + (height * .25), width/2, height);
 			this.slideCompletelyOpen = true;
 		}
 	}
@@ -295,11 +313,35 @@ p.mousePressed = function(){
 }
 
 
+ function textHeight(text, maxWidth, textLeading) {
+     var words = text.split(' ');
+     var line = '';
+     var h = textLeading;
+
+
+     for (var i = 0; i < words.length; i++) {
+         var testLine = line + words[i] + ' ';
+         var testWidth = p.drawingContext.measureText(testLine).width;
+
+         if (testWidth > maxWidth && i > 0) {
+             line = words[i] + ' ';
+             h += textLeading;
+         } else {
+             line = testLine;
+         }
+     }
+
+     return h;
+ }
+
+
 
 
 
 
 };
+
+
 
 
 
