@@ -4,16 +4,25 @@ body{
   overflow: hidden;
 }
 
+@font-face {
+  font-family: 'MyFont';
+  src: url('../images/POORICH.TTF'); 
+}
+
 #nav-bar{
   width: 5%;
   height: 8%;
   position: absolute;
   top: 3.5%;
   z-index: 99999999;
-  background: white;
+  /*background: white;*/
   left: 2%;
   cursor: pointer;
   display: none;
+}
+
+#nav-bar img{
+  width: 50px;
 }
 
 #description{
@@ -56,6 +65,7 @@ body{
 .ng-modal-dialog-content {
   padding:25px;
   text-align: left;
+  font-family: 'MyFont';
 }
 .ng-modal-close {
   position: absolute;

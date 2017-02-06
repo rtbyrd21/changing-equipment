@@ -24,7 +24,7 @@ var data = {
 					"description" : ["In the 1860s many McLean County farmers invested in equipment they could ride.", "The planter shown here is two-row check-row planter. Check-row planters guaranteed that seeds were evenly spaced within and between rows. Check-row planters were used for almost 100 years in McLean County."]
 				},
 				"1960s" : {
-					"description" : ["By the 1960s the check-row era was over. Planters were pulled by tractors with rubber tires, which enabled the farmers to plant more acres with less labor. Rather than a guide wire, farmers used a “marker” that was dragged over the soil next to the planter to guide their planting. By that time herbicides and mechanical cultivators could better control weeds in fields, so farmers could plant more seeds closer together within rows."]
+					"description" : ["By the 1960s the check-row era was over. Planters were pulled by tractors with rubber tires, which enabled the farmers to plant more acres with less labor. Rather than a guide wire, farmers used a ''marker'' that was dragged over the soil next to the planter to guide their planting. By that time herbicides and mechanical cultivators could better control weeds in fields, so farmers could plant more seeds closer together within rows."]
 				},
 				"2010s" : {
 					"description" : ["In the 1970s technology improved such that planting was done simultaneously with some tillage and fertilizing. Combining these tasks meant farmers could do double or triple the work with only one pass through the field.", "In the 2010s multitasking implements became essential for farmers to make a profit on their farms. The planter shown here not only applied fertilizer at the same time as planting, but it also planted seeds at extremely precise intervals and depths, and could adjust seed output based on previous years’ yields. All the planting data (such as the number of seeds per acre) appeared on a monitor in the cab of the tractor."]
@@ -57,7 +57,7 @@ var data = {
 					"description" : ["By the 1950s many farmers were using self-propelled corn pickers to remove the ears of corn from the stalks. Later, motorized corn shellers separated the kernels from the cob. Shown here is a Massey-Harris corn picker, with ear corn falling into a wagon."]
 				},
 				"2010s" : {
-					"description" : ["McLean County farmer Robert Hartzold put it best when he said, “We [harvest] more corn today in one day than we used to plant in a whole season.” Early twenty-first century, high-tech combines picked, shucked, shelled, and shredded stalks of field corn in one pass. Kernels were then transferred to a grain cart or truck, and then transported to on-farm storage or an elevator."]
+					"description" : ["McLean County farmer Robert Hartzold put it best when he said, ''We [harvest] more corn today in one day than we used to plant in a whole season.'' Early twenty-first century, high-tech combines picked, shucked, shelled, and shredded stalks of field corn in one pass. Kernels were then transferred to a grain cart or truck, and then transported to on-farm storage or an elevator."]
 				}
 			}
 		},
@@ -195,7 +195,7 @@ var data = {
 					"description" : ["Before seed drills were available in McLean County, farmers scattered the seed by throwing it. This technique is called “broadcasting.”"]
 				},
 				"1880s" : {
-					"description" : ["Since broadcasting seed by hand was time consuming and imprecise, some farmers began using a mechanical “seeder” attached to the back of a wagon to distribute the seeds (called a broadcast wagon). Others used seed drills. Seed drills (also called grain drills) distributed seeds more evenly and at proper depths compared to the broadcast method. Early seed drills and broadcast wagons were pulled by horses."]
+					"description" : ["Since broadcasting seed by hand was time consuming and imprecise, some farmers began using a mechanical ''seeder'' attached to the back of a wagon to distribute the seeds (called a broadcast wagon). Others used seed drills. Seed drills (also called grain drills) distributed seeds more evenly and at proper depths compared to the broadcast method. Early seed drills and broadcast wagons were pulled by horses."]
 				},
 				"1950s" : {
 					"description" : ["Tractor technology improved dramatically from the 1920s to the 1970s, which allowed farmers to pull heavier equipment. This planter planted 20 rows of wheat or oats simultaneously."]
@@ -211,10 +211,10 @@ var data = {
 					"description" : ["Harvesting small grain crops was exhausting work. Many hands were needed to harvest small grains. On the frontier, oats, wheat, and rye were harvested with a reaping hook. Cradle scythes (as shown here) did not require farmers to bend over to cut the grain, but they still had to rake and bind the crop by hand.", "To remove the edible grain from the inedible stalk, farmers used a flail and winnowing device."]
 				},
 				"1880" : {
-					"description" : ["Farmers who grew small grains, like oats and wheat, commonly had a “binder” machine (like the one shown here). The farmer then had the option of stacking several “sheaves” (bundles) together in a “shock” for air drying in the field; or they could toss the sheaves on to a wagon or rack, and haul them to a threshing machine when it arrived from a neighboring farm. The threshing crew would then have used steam power to separate the grain from the stems."]
+					"description" : ["Farmers who grew small grains, like oats and wheat, commonly had a ''binder'' machine (like the one shown here). The farmer then had the option of stacking several ''sheaves'' (bundles) together in a ''shock'' for air drying in the field; or they could toss the sheaves on to a wagon or rack, and haul them to a threshing machine when it arrived from a neighboring farm. The threshing crew would then have used steam power to separate the grain from the stems."]
 				},
 				"1930s" : {
-					"description" : ["Equipment that “combined” the cutting and threshing of wheat, oats, and rye into a single machine (called a combine) first became available in the 1930s. This equipment significantly lessened the amount of time needed to harvest small grains."]
+					"description" : ["Equipment that ''combined'' the cutting and threshing of wheat, oats, and rye into a single machine (called a combine) first became available in the 1930s. This equipment significantly lessened the amount of time needed to harvest small grains."]
 				},
 				"2010s" : {
 					"description" : ["Very little wheat and oats were grown in McLean County after World War II, as most of the acreage was dedicated to growing corn and soybeans. Wheat production shifted west into the Great Plains, and oats were no longer needed for horse feed after tractors replaced animal labor on farms."]

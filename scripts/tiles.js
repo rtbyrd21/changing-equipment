@@ -15,6 +15,8 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 
   var a = function(p) {
 
+ p.disableFriendlyErrors = true;	
+
   	var canvas;
   	var quarterTiles = [];
   	var images = [];
@@ -24,11 +26,19 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
   	var tileIsFullScreen = false;
   	$rootScope.tileIsFullScreen = false;
   	var placeholder;
+  	var myFont;
+
+  	p.preload = function(){
+  		// myFont = p.loadFont('images/POORICH.TTF');
+  		// myFont = p.loadFont('images/corbel.ttf');
+  	}
+
 	p.setup = function(){
 		infoIcon = p.loadImage("images/info_icon.png"); 
 		closeIcon = p.loadImage("images/close_icon.png"); 
 		background = p.loadImage("images/farm_background.jpg"); 
-		p.frameRate(60);
+		
+		p.frameRate(90);
 		p.textAlign(p.CENTER);
 		placeholder = p.createVideo("images/corn/harvesting/1860s/video.mp4");
 		placeholder.loop();
@@ -43,11 +53,12 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 
 		$.each( obj, function( key, value ) {
 			years.push(key);
-		  	videos.push(p.createVideo("http://s3.amazonaws.com/vineyardsandbox/Rob/images/" +crop + "/" + equipment + "/"  + key + "/video.mp4"))
+		  	videos.push(p.createVideo("images/" +crop + "/" + equipment + "/"  + key + "/video.mp4"))
 		  });
 
 		videos.forEach(function(item, index){
 			videos[index].loop();
+			videos[index].volume(0);
 			videos[index].hide();
 		});
 
@@ -55,6 +66,8 @@ myApp.controller('TileController', function($scope, $rootScope, $timeout, $state
 
 	p.draw = function() {
 		p.background(background);
+		// p.textFont(myFont);
+		p.textFont('Poor Richard');
 		for(var i=0; i< quarterTiles.length; i++){
 				// if(!quarterTiles[i].isFullScreen){
 					quarterTiles[i].moveIntoPlace();
@@ -98,11 +111,15 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 	this.slideCompletelyClosed = false;
 
 	this.drawDate = function(){
-		p.fill(0);
-		p.rect((this.x + width) - 100, (this.y + height) - 36, 100, 25);
+
 		p.fill(255);
+
+		p.textSize(30);
+
 		p.text(years[index], (this.x + width) - 80, (this.y + height) - 20);
-		p.fill(255,255,255,200);
+		p.textSize(17);
+		// p.strokeWeight(1);
+		// p.fill(255,255,255,200);
 		if(videos[index].loadedmetadata){
 			p.ellipse(((this.x + width) - 40) + 15, (this.y + 10) + 15, 30, 30);
 		}
@@ -130,6 +147,7 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 		if(!this.isClicked){	
 				if(videos[index].loadedmetadata){
 					p.image(videos[index], this.x, this.y, this.width, this.height);
+					videos[index].volume(0);
 				}
 			}else{
 				if(videos[index].loadedmetadata){
@@ -140,7 +158,9 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 					p.fill(0);
 					p.rect(this.x, this.y, this.width, this.height);
 					p.fill(255);
-					p.text(obj[years[index]].description, this.x + (this.width *.25), this.y + (this.height * .25), this.width/2, this.height);
+					// p.textFont(myFont);
+					p.textSize(17);
+					p.text(obj[years[index]].description, this.x + (this.width *.15), this.y + (this.height * .15), this.width * .7, this.height);
 				}
 				
 			}
@@ -196,8 +216,8 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 			var spacing = 0;
 			p.textLeading(18);
 			obj[years[index]].description.forEach(function(item, index){
-				p.text(item, that.slideX + (width * .25), (that.slideY + (height * .25)) + spacing, width/2);
-				spacing += textHeight(item, width/2, 18 + 3);
+				p.text(item, that.slideX + (width * .15), (that.slideY + (height * .15)) + spacing, width * .7);
+				spacing += textHeight(item, width/2, 18 + 6);
 			});
 		}else{
 			p.fill(0, 0, 0, 200);
@@ -207,8 +227,8 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 			var spacing = 0;
 			p.textLeading(18);
 			obj[years[index]].description.forEach(function(item, index){
-				p.text(item, that.slideX + (width * .25), (that.slideY + (height * .25)) + spacing, width/2);
-				spacing += textHeight(item, width/2, 18 + 3);
+				p.text(item, that.slideX + (width * .15), (that.slideY + (height * .15)) + spacing, width * .7);	
+				spacing += textHeight(item, width/2, 18 + 6);
 			});
 			// p.text(obj[years[index]].description, this.slideX + (width *.25), this.slideY + (height * .25), width/2, height);
 			this.slideCompletelyOpen = true;
@@ -246,58 +266,58 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 	}
 
 
-	this.enlarge = function(){
+	// this.enlarge = function(){
 
-		if(index == 0){
-			if(this.x + this.width < p.width){
-				this.width += 16;
-				if(p.windowHeight > this.y){
-					this.height += 9;
-				}
-			}else{
-				this.goBack();
-			}
-		}
+	// 	if(index == 0){
+	// 		if(this.x + this.width < p.width){
+	// 			this.width += 16;
+	// 			if(p.windowHeight > this.y){
+	// 				this.height += 9;
+	// 			}
+	// 		}else{
+	// 			this.goBack();
+	// 		}
+	// 	}
 
-		if(index == 1){
-			if(0 < this.x){
-				this.x += -16;
-				this.width += 16;
-				if(p.windowHeight > this.y){
-					this.height += 9;
-				}
-			}else{
-				this.goBack();
-			}
-		}
+	// 	if(index == 1){
+	// 		if(0 < this.x){
+	// 			this.x += -16;
+	// 			this.width += 16;
+	// 			if(p.windowHeight > this.y){
+	// 				this.height += 9;
+	// 			}
+	// 		}else{
+	// 			this.goBack();
+	// 		}
+	// 	}
 
-		if(index == 2){
-			if(this.x + this.width < p.width){
-				this.width += 16;
-				if(this.y > 0){
-					this.y -= 9;
-					this.height += 9;
-				}
-			}else{
-				this.goBack();
-			}
-		}
+	// 	if(index == 2){
+	// 		if(this.x + this.width < p.width){
+	// 			this.width += 16;
+	// 			if(this.y > 0){
+	// 				this.y -= 9;
+	// 				this.height += 9;
+	// 			}
+	// 		}else{
+	// 			this.goBack();
+	// 		}
+	// 	}
 
-		if(index == 3){
-			if(0 < this.x){
-				this.x += -16;
-				this.width += 16;
-				if(this.y > 0){
-					this.y -= 9;
-					this.height += 9;
-				}
-			}else{
-				this.goBack();
-			}
-		}
+	// 	if(index == 3){
+	// 		if(0 < this.x){
+	// 			this.x += -16;
+	// 			this.width += 16;
+	// 			if(this.y > 0){
+	// 				this.y -= 9;
+	// 				this.height += 9;
+	// 			}
+	// 		}else{
+	// 			this.goBack();
+	// 		}
+	// 	}
 
 		
-	}
+	// }
 	
 
 }
@@ -305,9 +325,6 @@ function QuarterTile(xPos, yPos, width, height, origin, index) {
 
 
 
-p.mousePressed = function(){
-	
-}
 
 
  function textHeight(text, maxWidth, textLeading) {
@@ -337,7 +354,6 @@ p.mousePressed = function(){
 
 
 };
-
 
 
 
